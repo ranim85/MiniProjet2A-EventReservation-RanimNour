@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MiniEvent</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="/?route=home">Accueil</a> |
+      <a href="/?route=events">Événements</a> |
+      <a href="/?route=admin_login">Admin</a>
+    </nav>
+  </header>
+  <main>
+    <?php if (!empty($_SESSION['flash'])): ?>
+        <div class="flash"><?= htmlspecialchars($_SESSION['flash']) ?></div>
+        <?php unset($_SESSION['flash']); ?>
+    <?php endif; ?>
