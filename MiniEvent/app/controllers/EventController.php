@@ -26,6 +26,30 @@ class EventController {
     }
 
     public function reserve() {
-        // handled in S3 commit
+        $id = $_GET['id'] ?? null;
+        if (!$id) { echo "ID manquant"; exit; }
+        $event = $this->eventModel->find($id);
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // will be handled in Commit 13
+            // place a redirect or temporary message
+            // but to keep flow: include Reservation handling file if exists.
+            require_once __DIR__ . '/../models/Reservation.php';
+            $reservationModel = new Reservation();
+            $data = [
+                'event_id' => $id,
+                'name' => $_POST['name'] ?? '',
+                'email' => $_POST['email'] ?? '',
+                'phone' => $_POST['phone'] ?? '',
+            ];
+            $reservationModel->create($data);
+            $_SESSION['flash'] = 'Réservation enregistrée. Merci !';
+            header('Location: /?route=events');
+            exit;
+        }
+
+        require_once __DIR__ . '/../views/partials/header.php';
+        require_once __DIR__ . '/../views/events/reserve.php';
+        require_once __DIR__ . '/../views/partials/footer.php';
     }
 }
