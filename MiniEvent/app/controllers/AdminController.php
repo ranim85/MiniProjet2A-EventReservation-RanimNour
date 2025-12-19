@@ -48,4 +48,72 @@ class AdminController {
         require_once __DIR__ . '/../views/admin/dashboard.php';
         require_once __DIR__ . '/../views/partials/footer.php';
     }
+
+    public function createEvent() {
+    $this->ensureAuth();
+    $eventModel = new Event();
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $data = [
+            'title' => $_POST['title'],
+            'description' => $_POST['description'],
+            'date' => $_POST['date'],
+            'location' => $_POST['location'],
+            'seats' => $_POST['seats'] ?? 0,
+            'image' => $_POST['image'] ?? '',
+        ];
+        $eventModel->create($data);
+        header('Location: /?route=admin_dashboard');
+        exit;
+    }
+    require_once __DIR__ . '/../views/partials/header.php';
+    require_once __DIR__ . '/../views/admin/form_event.php';
+    require_once __DIR__ . '/../views/partials/footer.php';
+}
+
+public function editEvent() {
+    $this->ensureAuth();
+    $id = $_GET['id'] ?? null;
+    $eventModel = new Event();
+    if (!$id) { header('Location: /?route=admin_dashboard'); exit; }
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $eventModel->update($id, [
+            'title'=>$_POST['title'],
+            'description'=>$_POST['description'],
+            'date'=>$_POST['date'],
+            'location'=>$_POST['location'],
+            'seats'=>$_POST['seats'] ?? 0,
+            'image'=>$_POST['image'] ?? '',
+        ]);
+        header('Location: /?route=admin_dashboard');
+        exit;
+    }
+
+    $event = $eventModel->find($id);
+    require_once __DIR__ . '/../views/partials/header.php';
+    require_once __DIR__ . '/../views/admin/form_event.php';
+    require_once __DIR__ . '/../views/partials/footer.php';
+}
+
+public function deleteEvent() {
+    $this->ensureAuth();
+    $id = $_GET['id'] ?? null;
+    if ($id) {
+        $ev = new Event();
+        $ev->delete($id);
+    }
+    header('Location: /?route=admin_dashboard');
+    exit;
+}
+
+public function reservations() {
+    $this->ensureAuth();
+    $id = $_GET['id'] ?? null;
+    $reservationModel = new Reservation();
+    $reservations = $reservationModel->findByEvent($id);
+    require_once __DIR__ . '/../views/partials/header.php';
+    require_once __DIR__ . '/../views/admin/reservations.php';
+    require_once __DIR__ . '/../views/partials/footer.php';
+}
+
 }
