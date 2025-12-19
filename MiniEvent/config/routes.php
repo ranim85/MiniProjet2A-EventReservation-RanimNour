@@ -8,5 +8,6 @@ function get_routes() {
         'admin_login' => [__DIR__ . '/../app/controllers/AdminController.php', 'login'],
         'admin_dashboard' => [__DIR__ . '/../app/controllers/AdminController.php', 'dashboard'],
         // add other routes later
+        
     ];
 }
